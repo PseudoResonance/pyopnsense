@@ -58,3 +58,103 @@ class FirewallClient(client.OPNClient):
     def apply_rules(self):
         """Function to apply changes to rules."""
         self._post("firewall/filter/apply/", "")
+
+    def get_categories(self):
+        """Get a list of firewall categories
+
+        :returns: A dict representing all categories
+        :rtype: dict
+        """
+        return self._post("firewall/category/searchItem",
+                          {"current": 1, "rowCount": -1, "sort": {}, "searchPhrase": ""})
+
+    def get_aliases(self, searchType: list[str] = [], searchCategories: list[str] = []):
+        """Get a list of firewall aliases
+
+        :returns: A dict representing all aliases
+        :rtype: dict
+        """
+        return self._post("firewall/alias/searchItem",
+                          {"current": 1, "rowCount": -1, "sort": {}, "searchPhrase": "", "type": searchType, "category": searchCategories})
+
+    def add_alias(self, alias: dict):
+        """Adds a new firewall alias
+
+        :returns: A dict representing the result of the operation
+        :rtype: dict
+        """
+        return self._post("firewall/alias/addItem",
+                          alias)
+
+    def set_alias(self, uuid: str, alias: dict):
+        """Sets the options of a firewall alias
+
+        :returns: A dict representing the result of the operation
+        :rtype: dict
+        """
+        return self._post(f"firewall/alias/setItem/{uuid}",
+                          alias)
+
+    def del_alias(self, uuid: str):
+        """Deletes a firewall alias
+
+        :returns: A dict representing the result of the operation
+        :rtype: dict
+        """
+        return self._post(f"firewall/alias/delItem/{uuid}", {})
+
+    def apply_aliases(self):
+        """Applies all updated aliases
+
+        :returns: A dict representing the result of the operation
+        :rtype: dict
+        """
+        return self._post("firewall/alias/set", {})
+
+    def get_source_nat(self, searchCategories: list[str] = []):
+        """Get a list of source NAT rules
+
+        :returns: A dict representing all source NAT rules
+        :rtype: dict
+        """
+        return self._post("firewall/source_nat/search_rule", {"current": 1, "rowCount": -1, "sort": {}, "searchPhrase": "", "category": searchCategories})
+
+    def add_source_nat(self, rule: dict):
+        """Adds a NAT port forward
+
+        :returns: A dict representing the result of the operation
+        :rtype: dict
+        """
+        return self._post("firewall/source_nat/add_rule", rule)
+
+    def del_source_nat(self, uuid: str):
+        """Deletes a NAT port forward
+
+        :returns: A dict representing the result of the operation
+        :rtype: dict
+        """
+        return self._post(f"firewall/source_nat/del_rule/{uuid}", {})
+
+    def get_filter_rule(self, searchCategories: list[str] = []):
+        """Get a list of filter rules
+
+        :returns: A dict representing all filter rules
+        :rtype: dict
+        """
+        return self._post("firewall/filter/search_rule", {"current": 1, "rowCount": -1, "sort": {}, "searchPhrase": "", "category": searchCategories})
+
+    def add_filter_rule(self, rule: dict):
+        """Adds a filter rule
+
+        :returns: A dict representing the result of the operation
+        :rtype: dict
+        """
+        return self._post("firewall/filter/add_rule", rule)
+
+    def del_filter_rule(self, uuid: str):
+        """Deletes a filter rule
+
+        :returns: A dict representing the result of the operation
+        :rtype: dict
+        """
+        return self._post(f"firewall/filter/del_rule/{uuid}", {})
